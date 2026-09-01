@@ -18,13 +18,13 @@ See [SKILL.md](SKILL.md) for the full procedure.
 
 ## Install
 
-Copy or symlink this repo into your Claude Code skills directory:
+Clone this repo into your Claude Code skills directory:
 
 ```bash
-git clone <this-repo-url> ~/.claude/skills/comments-to-rules
+git clone https://github.com/BatchCodes/comments-to-rules ~/.claude/skills/comments-to-rules
 ```
 
-Or, if you already have a local clone:
+Or, if you already have a local clone elsewhere:
 
 ```bash
 ln -s /path/to/comments-to-rules ~/.claude/skills/comments-to-rules
@@ -35,15 +35,14 @@ Restart Claude Code, or start a new session, so it picks up the skill.
 ## Run
 
 Open Claude Code in the repo you want rules for — the **target repo**, a
-different repo from this skill's own repo. Then ask for it in plain
-language, for example:
+different repo from this skill's own repo. Then either:
 
-```text
-Generate coding-style rules from our PR review history
-```
+- Run the skill directly: `/comments-to-rules`
+- Or ask for it in plain language, for example: "Generate coding-style
+  rules from our PR review history". Claude Code matches this against the
+  skill's trigger description and runs the same procedure.
 
-Claude Code matches this request against the skill's trigger description,
-then runs the procedure in [SKILL.md](SKILL.md):
+Either way runs the procedure in [SKILL.md](SKILL.md):
 
 1. Fetches merged-PR review comments through `gh`.
 2. Filters and groups them into per-language rules.
