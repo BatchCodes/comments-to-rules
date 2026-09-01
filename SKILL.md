@@ -73,16 +73,24 @@ Scan the target repo's files, respecting `.gitignore`, grouped by language. Scan
 
 If Step 1 found no merged PRs at all, every language's rule file comes from this step alone. Treat this as the normal path for a new or lightly-reviewed repo, not as a fallback.
 
+**Delegating a language's Step 2 and Step 3 work to a subagent is a reasonable choice on a repo with several languages.** Each language then gets its own separate context to read comments and scan files in. If you do this, tell the subagent what its final report must include:
+
+- The language, and the file path it wrote or updated.
+- The total rule count.
+- How many comments it used to create rules — one running tally, updated each time it keeps or drops a comment. Do not have it reconstruct this count afterward by rereading the file.
+
+Step 4 builds its summary from these reported numbers alone. Do not reread a finished rule file to count its rules or confirm its content. The subagent that wrote the file already knows both numbers.
+
 ### Step 4 — Confirm the rule files are complete
 
 Before you offer anything further, tell the user plainly that rule-file writing is done. This is a separate event from the review offer in Step 5, not a lead-in to it. State it as its own message, with a summary that covers:
 
 - **Files.** Every `.claude/rules/code-style-{language}.md` you wrote or updated this run.
 - **Languages covered.** The distinct languages across those files.
-- **PRs fetched.** The PR count from Step 1's output.
-- **Comments fetched.** The total comment count from Step 1's output — the count after the length filter, before the semantic filter. Use the script's own "wrote N comment(s) across M language group(s)" line.
-- **Comments used.** How many of those comments survived Step 2's semantic filter and shaped a rule. This number is smaller than "comments fetched" — most fetched comments turn out to be noise, discussion, or a duplicate of a rule you already captured.
-- **Rules created.** The total rule count across every file you wrote this run, PR-derived and locally-inferred combined.
+- **PRs fetched.** The PR count from Step 1's own printed output. Read this number — do not recount it yourself.
+- **Comments fetched.** The total comment count from Step 1's own printed output — the count after the length filter, before the semantic filter. Read the script's "wrote N comment(s) across M language group(s)" line. Do not derive this by reading the comment dump.
+- **Comments used.** How many comments survived Step 2's semantic filter and shaped a rule. This number is smaller than "comments fetched" — most fetched comments turn out to be noise, discussion, or a duplicate of a rule you already captured. Get this from the running tally you kept per language while filtering — see Step 3's note on delegating to a subagent. Do not get it by rereading a finished rule file and counting.
+- **Rules created.** The total rule count across every file you wrote this run, PR-derived and locally-inferred combined. Sum this from your own tracked count per language, or from each subagent's reported count. Apply the same rule as "Comments used": count while you work, and never recount by rereading the file.
 - **Tokens used.** State this as an estimate, and say so. You have no reliable way to read your own exact token usage mid-session. Base the estimate on a rough proxy: divide the character count you read from the comment dump and local files, plus the character count you wrote to rule files, by about 4. Tell the user this is a rough estimate, not a billed figure, and point them to `/cost` for an exact number.
 - **Languages skipped.** Any language Step 3 chose not to write a file for — no actionable rule from either step, or too few files in the repo to be worth a dedicated file — with a one-line reason each.
 
