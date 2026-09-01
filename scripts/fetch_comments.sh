@@ -45,7 +45,7 @@ Options:
   --timeout N          Per-PR fetch timeout in seconds (default: 30). Prevents
                         one stuck request from hanging the whole run.
   --min-length N        Minimum comment length to keep, ```suggestion blocks
-                        excluded from the count (default: 20).
+                        excluded from the count (default: 10).
   --force              Ignore any existing output, fetch fresh.
   -h, --help            Show this help.
 

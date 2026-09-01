@@ -52,7 +52,7 @@ entrypoint. Keep this doc in sync as the pipeline evolves.
 Reads the raw per-PR JSONL. Runs one `jq` process for the whole set — not
 one fork per comment. That one process does three things:
 
-- Drops a comment shorter than `--min-length` (default 20 characters). It
+- Drops a comment shorter than `--min-length` (default 10 characters). It
   measures this with any ` ```suggestion ` fenced block stripped out first,
   so a short note plus a large diff does not read as "long". The
   suggestion block itself stays in the output — only the length check
@@ -60,7 +60,12 @@ one fork per comment. That one process does three things:
   `+1`, `done`, and similar comments. It does not replace the judgment-based
   filtering `SKILL.md` Step 2 still does — bot comments, and discussion with
   no action to take — because that needs judgment a regular expression
-  cannot supply.
+  cannot supply. The default was 20 originally, revised down after a length
+  audit of a real comment set: comments under 10 characters carried almost
+  no signal (0.4% held an actionable rule, and most were empty prose beside
+  a `suggestion` diff), while the 10-19 range carried the bulk of the signal
+  the old cutoff was discarding (13% held an actionable rule). Dropping to
+  10 catches most of that at a small increase in Step 2's review load.
 - Infers a language for each comment from its file extension, through a
   fixed extension-to-language map in the script. An unmapped extension
   falls back to the raw extension. A comment with no extension falls back

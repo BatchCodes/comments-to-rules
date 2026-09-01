@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 # shellcheck source=SCRIPT_DIR/common.sh
 source "${SCRIPT_DIR}/common.sh"
 
-DEFAULT_MIN_LENGTH=20
+DEFAULT_MIN_LENGTH=10
 
 # Extension -> language name. Extensions not listed here fall back to the
 # raw extension as the language name; a path with no extension falls back
@@ -53,7 +53,7 @@ line), and writes a formatted, filtered, language-tagged stream:
     records to per-language files without re-parsing JSON.
 
 Options:
-  --min-length N   Minimum comment length to keep (default: 20).
+  --min-length N   Minimum comment length to keep (default: 10).
   -h, --help       Show this help.
 EOF
 }
