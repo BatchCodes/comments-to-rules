@@ -4,7 +4,9 @@ This is the format for every `.claude/rules/code-style-{language}.md` file
 this skill writes into a target repo. It matches the structure already set
 by this repo's own example files: `.claude/rules/code-style-shell.md` and
 `.claude/rules/code-style-markdown.md`. Read those two for a full worked
-example. This doc names the parts.
+example of the structure. Match their density of code examples less
+closely — they predate the "examples are the exception" guidance below,
+so they carry more examples than a new rule file should.
 
 ## Structure
 
@@ -19,11 +21,12 @@ paths:
 
 {Optional context note — see "Context note" below.}
 
-- {Rule 1, a short imperative instruction.}
+- {Rule 1, a short imperative instruction. Most rules stop here — no example.}
 - {Rule 2.}
+- {Rule 3, a rule that reads two ways without a contrast, so it earns one:}
 
 ```
-{notLikeThis example, if a contrast helps.}
+{notLikeThis example.}
 ```
 
 ```
@@ -63,11 +66,15 @@ the PR-comment-derived rules above so provenance stays clear.}
   real PR comment gives a clean, concrete example, quote it, or the code it
   commented on, verbatim, rather than paraphrasing it. This keeps the rule
   traceable to something that actually happened in this repo.
-- **Good/bad code examples (optional).** Use the `notLikeThis` and
-  `ratherLikeThis` naming convention for contrasting fenced blocks, as in
-  `code-style-shell.md`, when a rule is easier to show than to state in
-  prose. Skip this for a rule that does not need it — not every bullet
-  needs a code sample.
+- **Good/bad code examples — the exception, not the default.** A rule
+  states its instruction in prose and stops there. Add a `notLikeThis` and
+  `ratherLikeThis` pair of contrasting fenced blocks only when the prose
+  alone would leave the reader unsure what to do — a rule about layout or
+  punctuation that words cannot show as clearly as code, or a case where a
+  plausible-looking alternative needs to be ruled out by name. Do not add
+  an example to illustrate a rule that is already unambiguous in prose. A
+  rule file with ten rules and two examples is normal. A rule file with an
+  example under every bullet means most of those examples were not needed.
 - **`## Locally Inferred` section.** Step 3 of `SKILL.md` adds this, after
   the PR-comment-derived rules above it. Never interleave the two kinds of
   rule. Use the same bullet style. Omit the whole section if Step 3 found

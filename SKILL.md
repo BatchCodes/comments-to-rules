@@ -60,7 +60,7 @@ Before you write a language's rule file, check the target repo's `.claude/rules/
 - If you update an existing file, read it first. Merge in your new findings. Keep existing rules that still hold. If a new finding contradicts an existing rule, stop and ask the user which one to keep — never overwrite silently.
 - If no existing file covers this language, create `.claude/rules/code-style-{language}.md`.
 
-Either way, follow the structure in [references/rule-template.md](references/rule-template.md): a `paths:` frontmatter glob, an optional context note, rule bullets, and code-fenced good/bad examples. Where a real PR comment gives a clean example, quote it verbatim. Write every rule file in ASD-STE100 compliant prose. Invoke the `asd-ste100` skill for this pass, if it is installed. If it is not installed, note in the file that you skipped this check.
+Either way, follow the structure in [references/rule-template.md](references/rule-template.md): a `paths:` frontmatter glob, an optional context note, and rule bullets. State a rule in prose and stop there by default — add a code-fenced good/bad example only when the rule would stay unclear without one. Where a real PR comment gives a clean example that a rule genuinely needs, quote it verbatim rather than paraphrasing it. Write every rule file in ASD-STE100 compliant prose. Invoke the `asd-ste100` skill for this pass, if it is installed. If it is not installed, note in the file that you skipped this check.
 
 ### Step 3 — Local-file pass
 
