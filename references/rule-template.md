@@ -77,7 +77,10 @@ the PR-comment-derived rules above so provenance stays clear.}
   example under every bullet means most of those examples were not needed.
   When a rule does earn an example, prefer a real `Original code:` and
   ` ```suggestion ` pair from the comment dump over a fabricated one — see
-  `SKILL.md` Step 2.
+  `SKILL.md` Step 2. State the rule, then show the code. Do not narrate the
+  example's origin in prose — no "a reviewer suggested this on PR #123", no
+  "a reviewer's real suggestion changed this". A PR number or a reviewer's
+  name is not part of the rule.
 - **`## Locally Inferred` section.** Step 3 of `SKILL.md` adds this, after
   the PR-comment-derived rules above it. Never interleave the two kinds of
   rule. Use the same bullet style. Omit the whole section if Step 3 found

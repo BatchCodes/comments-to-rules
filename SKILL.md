@@ -54,6 +54,7 @@ The dump is already grouped by language: one subdirectory or section per languag
 - When two or more comments state the same rule, merge them into one rule.
 - A comment with a ` ```suggestion ` block, and an `Original code:` block above it, holds a real before/after pair from this repo's own history. Read the diff, not only the prose beside it — the diff can state a rule on its own, even where the prose says little or nothing. A suggestion that turns an `if`/`else` into a guard clause and a return states "prefer an early return" by itself, with or without a comment that says so. When you keep a rule this way, treat the diff as the source, not just as an example for a separately-stated rule.
 - Where a rule does earn a code example, see `rule-template.md` for when one is worth adding. Prefer a real `Original code:` and `suggestion` pair over a fabricated one — it is a genuine `notLikeThis`/`ratherLikeThis` pair already.
+- State the rule, then show the pair as code. Do not narrate where it came from — no "a reviewer suggested this on PR #531", no "a reviewer's real suggestion changed". The rule and the code are the content. The PR number and the reviewer are not.
 
 A language can have too few actionable comments to support a rule with confidence. As a rough guide, treat fewer than three surviving rules as too few. This can happen with thin PR history, a small or new repo, or a language reviewers rarely touch. In this case, do not force a rule file out of what little exists. Note which languages are thin. Keep the few rules that did survive. Let Step 3 write the rest of that language's file. This includes the extreme case: a language with zero surviving comments still gets a file, written entirely by Step 3.
 
@@ -83,6 +84,8 @@ If Step 1 found no merged PRs at all, every language's rule file comes from this
 - How many comments it used to create rules — one running tally, updated each time it keeps or drops a comment. Do not have it reconstruct this count afterward by rereading the file.
 
 Step 4 builds its summary from these reported numbers alone. Do not reread a finished rule file to count its rules or confirm its content. The subagent that wrote the file already knows both numbers.
+
+**Keep this delegation flat — one level, never nested.** Dispatch at most one subagent per language, directly from the main session. Do not have a language subagent spawn its own child agents to split up a large comment volume, and do not ask it to. A transcript audit found a nested tree — main session, then language agents, then chunk-reader children, roughly 20 agents deep. Managing it cost 16% of that run's real token cost in pure coordination alone: polling agent status, sending heartbeat wakeups, tracking stragglers one at a time. That number does not even count the main session's own narration between checks. A language with more comments than one subagent's context comfortably holds is not a reason to add a tree level. It is a reason for that one subagent to read its chunk files sequentially, inside its own context. That context can hold far more than the main session ever needs to track at once.
 
 ### Step 4 — Confirm the rule files are complete
 
