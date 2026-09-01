@@ -100,7 +100,9 @@ own newline after every output, which corrupted the record boundaries.
 ## Error handling
 
 - `gh` not installed, or `gh auth status` fails: print a clear message,
-  exit with a non-zero status. Do not attempt to fetch.
+  exit with a non-zero status. Do not attempt to fetch. Neither the
+  script nor the calling agent runs `gh auth login` or `gh auth
+  refresh` — the message tells the user to run it themselves.
 - `jq` or `timeout` not installed: same.
 - The target directory has no GitHub remote, or `gh repo view` fails: same.
 - The repo has zero PRs matching `--state`: print that clearly, exit with

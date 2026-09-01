@@ -26,6 +26,8 @@ Check these before you start. If any check fails, stop and give a clear message.
 - `jq` is installed.
 - The target directory is a git repo with a GitHub remote (`gh repo view` succeeds there).
 
+If `gh auth status` fails, do not run `gh auth login` or `gh auth refresh` yourself. Tell the user to run it, then stop. These commands can open an interactive browser flow or a device code prompt — only the user should start that.
+
 ## Procedure
 
 ### Step 1 — Fetch merged-PR review comments
@@ -39,7 +41,7 @@ Run `scripts/fetch_comments.sh` against the target repo. It runs a pipeline of s
 - The script reports its own progress: the repo it detected, the output location, each fetch batch, and each file it writes. Show this progress to the user. Do not run the script silently.
 - The default PR limit is 1000, most-recent-first. Pass `--all` for no cap. If the PR count exceeds the default limit, the script exits with status 2 and a `NEEDS_INPUT` message. Ask the user whether to use the most recent 1000 PRs or all of them, then re-run with that choice.
 - If the user interrupts the script (Ctrl-C) during a large fetch, the script stops after the batch in progress. It writes what it fetched so far, and it prints the PR range it did not reach. Tell the user this, and offer to resume later for that range.
-- If `gh` is missing or not authenticated, or if `jq` or `timeout` is missing, stop and tell the user how to fix it.
+- If `gh` is missing or not authenticated, or if `jq` or `timeout` is missing, stop and tell the user how to fix it. Do not run `gh auth login` or `gh auth refresh` yourself — see Prerequisites.
 - If the repo has no merged PRs, tell the user, then skip to Step 3 (the local-file pass alone).
 
 ### Step 2 — Filter and group comments into rules
