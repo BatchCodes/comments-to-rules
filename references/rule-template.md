@@ -75,6 +75,9 @@ the PR-comment-derived rules above so provenance stays clear.}
   an example to illustrate a rule that is already unambiguous in prose. A
   rule file with ten rules and two examples is normal. A rule file with an
   example under every bullet means most of those examples were not needed.
+  When a rule does earn an example, prefer a real `Original code:` and
+  ` ```suggestion ` pair from the comment dump over a fabricated one — see
+  `SKILL.md` Step 2.
 - **`## Locally Inferred` section.** Step 3 of `SKILL.md` adds this, after
   the PR-comment-derived rules above it. Never interleave the two kinds of
   rule. Use the same bullet style. Omit the whole section if Step 3 found

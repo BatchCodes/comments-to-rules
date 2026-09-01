@@ -44,7 +44,8 @@ fetch_one_pr_comments() {
 
   while (( attempt <= max_attempts )); do
     if timeout "${timeout_secs}" gh api "repos/${repo}/pulls/${pr_number}/comments" --paginate \
-      --jq ".[] | {pr: ${pr_number}, path, author: .user.login, created_at, body}" \
+      --jq ".[] | {pr: ${pr_number}, path, author: .user.login, created_at, body,
+        diff_hunk: (if (.body | contains(\"\`\`\`suggestion\")) then .diff_hunk else null end)}" \
       >"${out_file}" 2>"${out_file}.err"; then
       rc=0
     else

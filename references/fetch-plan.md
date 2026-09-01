@@ -34,6 +34,13 @@ entrypoint. Keep this doc in sync as the pipeline evolves.
   default (`--concurrency` to override). Each PR fetch is a single
   `gh api --paginate --jq ...` call — no separate `jq` process piped after
   it. Writes one `pr-<number>.jsonl` file per PR, into `--out-dir`.
+- Each comment record is `{pr, path, author, created_at, body, diff_hunk}`.
+  `diff_hunk` is GitHub's own field for the code around the commented line.
+  The `--jq` filter fetches it only when `body` contains a ` ```suggestion `
+  block — that is the one case where the surrounding code turns a bare
+  suggestion into a real before/after pair, so `SKILL.md` Step 2 can quote
+  it as a code example instead of inventing one. Every other comment gets
+  `diff_hunk: null`, to keep the common case small.
 - Each PR fetch runs under `timeout` (default 30 seconds, `--timeout` to
   override). A single stalled network call used to hang the entire batch
   forever, because `xargs -P` waits for every child process before it
@@ -74,6 +81,11 @@ one fork per comment. That one process does three things:
   covers `sh`, `bash`, and `zsh` as one `shell` group.
 - Sorts every comment newest-first, then groups the result by language. The
   sort is stable, so the newest-first order holds within each group too.
+
+Each markdown block renders `diff_hunk`, when present, as an `Original
+code:` fenced block right before the comment body — so a `suggestion`
+block in the body reads as a real before/after pair, not just the "after"
+half.
 
 The output is a stream of records: `<language><unit-sep><markdown
 block><record-sep>`. The unit separator is `0x1f`. The record separator is

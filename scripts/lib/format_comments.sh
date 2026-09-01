@@ -68,19 +68,27 @@ sort_and_format_comments() {
     --arg usep "${UNIT_SEP}" \
     --argjson extmap "${EXTENSION_MAP_JSON}" \
     --argjson minlen "${min_length}" '
+    def has_suggestion: (.body // "") | contains("```suggestion");
     def suggestion_stripped: (.body // "") | gsub("(?s)```suggestion.*?```"; "");
     def extension:
       ((.path // "") | split("/") | last | split(".")) as $parts
       | if ($parts | length) > 1 then ($parts[-1] | ascii_downcase) else "" end;
     def language: extension as $e | if $e == "" then "other" else ($extmap[$e] // $e) end;
 
-    map(select((suggestion_stripped | length) >= $minlen))
+    def diff_context:
+      if .diff_hunk then "Original code:\n```\n\(.diff_hunk)\n```\n\n" else "" end;
+
+    # A suggestion block is its own signal, independent of prose length — a
+    # comment that is only a diff, with little or no surrounding prose,
+    # still shows a real before/after pair. Only the length filter applies
+    # to a comment with no suggestion block.
+    map(select(has_suggestion or (suggestion_stripped | length) >= $minlen))
     | map(. + {language: language})
     | sort_by(.created_at) | reverse
     | group_by(.language) | sort_by(.[0].language)
     | .[][]
     | (.language + $usep +
-       "## PR #\(.pr) — \(.path // "unknown path")\n\n- author: \(.author)\n- date: \(.created_at)\n\n\(.body)\n"
+       "## PR #\(.pr) — \(.path // "unknown path")\n\n- author: \(.author)\n- date: \(.created_at)\n\n\(diff_context)\(.body)\n"
        + $rsep)
   ' "${combined_jsonl}" >"${formatted_file}"
 }
