@@ -80,3 +80,16 @@ then runs the procedure in [SKILL.md](SKILL.md):
   fetch pipeline.
 - [references/rule-template.md](references/rule-template.md) — output
   format for the generated rule files.
+
+## Example Output:
+
+```
+Rule files complete.
+
+Wrote .claude/rules/code-style-typescript.md, code-style-sql.md, code-style-yaml.md, code-style-terraform.md, code-style-json.md (5 files)
+Languages: typescript, sql, terraform, yaml, json
+297 merged PRs fetched, 42 comments survived length filtering, 20 of those used to create rules
+31 rules created total (Terraform and JSON came entirely from local inference — no PR history for those languages)
+~130K tokens used this run (rough estimate, mostly the two background research agents — run /cost for an exact figure)
+Skipped markdown and shell — too few files in the repo (3 and 2) to be worth dedicated rule files.
+```
