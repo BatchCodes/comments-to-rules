@@ -1,0 +1,10 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Session transcripts and other local debugging artifacts
+*.jsonl
+
+# Editor
+.idea/
+*.swp

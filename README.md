@@ -1,13 +1,10 @@
 # Comments to Rules
 
-A Claude Code skill. 
-It turns a GitHub repo's PR review-comment history into per-language coding-style rule files. 
-It adds rules inferred from the local
-codebase. 
-It can then run a review against the result.
+This Claude Code skill turns a GitHub repo's PR review-comment history into
+per-language coding-style rule files. It adds rules inferred from the local
+codebase.
 
-See [SKILL.md](SKILL.md) for the full procedure and [PLAN.md](PLAN.md) for
-the design plan.
+See [SKILL.md](SKILL.md) for the full procedure.
 
 ## Requirements
 
@@ -60,18 +57,58 @@ then runs the procedure in [SKILL.md](SKILL.md):
 - **Requires `gh`, installed and authenticated.** The fetch step calls the
   `gh` CLI for every GitHub API request. If `gh` is missing, or
   `gh auth status` fails, the skill stops and tells you how to fix it. It
-  does not fall back to an unauthenticated method. See the
-  [Future Work](PLAN.md#future-work) section of `PLAN.md` for research into
-  a `gh`-free fetch path — plain `curl` or `wget` against public repos.
-- GitHub only, for now. See the same `PLAN.md` section for notes on
+  does not fall back to an unauthenticated method. See
+  [Future Work](#future-work) for research into a `gh`-free fetch path —
+  plain `curl` or `wget` against public repos.
+- GitHub only, for now. See [Future Work](#future-work) for notes on
   supporting GitLab, Bitbucket, and self-hosted Git forges.
 - Linux only, tested. macOS ships `bash` 3.2 and no `timeout` command by
   default. `scripts/lib/fetch_pr_comments.sh` needs `timeout` to kill a
-  stuck fetch. See the macOS support note in
-  [PLAN.md](PLAN.md#future-work).
+  stuck fetch. See the macOS note in [Future Work](#future-work).
 - Fetches merged PRs by default, most recent 1000. Pass `--all` to
   `scripts/fetch_comments.sh` for no cap, or ask Claude to use it. See
   [references/fetch-plan.md](references/fetch-plan.md) for every flag.
+
+## Future Work
+
+- **Non-GitHub remote hosts.** The fetch pipeline (`scripts/lib/`) is
+  GitHub-specific today: the `gh` CLI, GitHub's REST API shape, GitHub's
+  `403`/`429` rate-limit semantics. Supporting GitLab, Bitbucket, or a
+  self-hosted Gitea or Forgejo instance means detecting the remote host,
+  instead of assuming GitHub, and swapping in a host-specific list-and-fetch
+  implementation behind the same interface (`list_pr_numbers`,
+  `fetch_one_pr_comments`). The `lib/` split keeps this open: a second
+  host's scripts could sit beside the GitHub ones and share
+  `format_comments.sh` and `write_output.sh` unchanged, since those two only
+  handle the already-normalized `{pr, path, author, created_at, body}`
+  shape.
+- **Fetching without `gh`.** The skill hard-requires the `gh` CLI today (see
+  Limitations above). GitHub's REST API is readable without authentication
+  for a public repo, so a `curl`/`wget` fetch path is possible in principle
+  — subject to GitHub's much lower unauthenticated rate limit (60
+  requests/hour, versus `gh`'s authenticated ~5000/hour). Worth it for users
+  who do not want to install `gh`, or environments where installing a CLI
+  tool is restricted. The lower rate limit likely makes it impractical
+  beyond a small repo.
+- **macOS support.** Two known gaps, neither fixed yet. macOS ships `bash`
+  3.2 and defaults to `zsh` — the scripts should still run under bash 3.2,
+  since nothing here needs bash 4+ features, but that needs verifying, not
+  assuming. macOS also has no `timeout` command by default (no GNU
+  coreutils), and `scripts/lib/fetch_pr_comments.sh` depends on it to kill a
+  stuck `gh api` call. A fix would detect `timeout` versus Homebrew's
+  `gtimeout` (`brew install coreutils`), or replace it with a portable
+  background-job-plus-`kill` wrapper that depends on neither.
+
+## Contributing
+
+PRs and issues welcome. For a shell or markdown change, follow the
+conventions in [.claude/rules/code-style-shell.md](.claude/rules/code-style-shell.md)
+and [.claude/rules/code-style-markdown.md](.claude/rules/code-style-markdown.md)
+— this repo tries to follow its own output.
+
+## License
+
+[MIT](LICENSE).
 
 ## See also
 
@@ -81,7 +118,7 @@ then runs the procedure in [SKILL.md](SKILL.md):
 - [references/rule-template.md](references/rule-template.md) — output
   format for the generated rule files.
 
-## Example Outputs:
+## Example Outputs
 
 ```
 Rule files complete.

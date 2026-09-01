@@ -36,7 +36,7 @@ Run `scripts/fetch_comments.sh` against the target repo. It runs a pipeline of s
 
 - The script writes a markdown comment dump to `~/.cache/comments-to-rules/{owner}-{repo}/` by default.
 - Use `--output` to choose a different location. Give it a directory to get one chunk file per language. Give it any other path to get one combined file.
-- In directory mode, the script groups the dump by language already: `<language>/comments-NNN.md`, 250 comments per chunk. This keeps each `Read` call in Step 2 cheap — see the token-usage note in `PLAN.md`.
+- In directory mode, the script groups the dump by language already: `<language>/comments-NNN.md`, 250 comments per chunk. This keeps each `Read` call in Step 2 cheap.
 - The script drops a comment shorter than 10 characters before you see it (`--min-length` to change this). It measures this on the prose only, with any ` ```suggestion ` block excluded from the count. This is a mechanical filter for pure noise — `lgtm`, `nit`, `+1`, and similar. It does not replace the judgment-based filtering in Step 2.
 - A comment with a ` ```suggestion ` block skips that length filter entirely, however short its prose. The suggestion is signal on its own, even with no prose beside it — see Step 2. That comment also gains an `Original code:` block above it: the surrounding code GitHub attached to the comment, showing what the suggestion replaced.
 - The script reports its own progress: the repo it detected, the output location, each fetch batch, and each file it writes. Show this progress to the user. Do not run the script silently.
