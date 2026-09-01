@@ -69,6 +69,7 @@ Scan the target repo's files, respecting `.gitignore`, grouped by language. Scan
 - For a language Step 2 already covered well, add these findings under a "Locally Inferred" heading. Keep this section visually separate from the PR-comment rules above it, so the source of each rule stays clear.
 - For a language Step 2 flagged as thin, or skipped, this pass is the language's primary source — not a bonus. This covers a language with zero PR comments, and a repo with no merged PRs at all (see Step 1). Write the file from local inference alone. State this plainly in the file's context note — see `rule-template.md` — for example: "These rules come from local code conventions. PR review history for this language was too thin to draw rules from." Do not label these rules as PR-derived. Do not present a local finding as if a reviewer had said it.
 - Where local code follows no consistent convention, do not invent a rule. Add the question to an "Open Questions" section instead — see `rule-template.md` — and ask the user which convention to adopt.
+- Do not write a rule file for a language with no actionable rule to state — not from Step 2, not from this step. A rule file whose only content would explain why it has nothing to say is not a rule file. This comes up most often for a language a formatter fully controls, with no PR history and no hand-written convention to infer — for example, JSON files that are only config or lock files, formatted by Prettier alone. In that case, skip the file, and list the language, with a one-line reason, in Step 4's summary instead.
 
 If Step 1 found no merged PRs at all, every language's rule file comes from this step alone. Treat this as the normal path for a new or lightly-reviewed repo, not as a fallback.
 
@@ -83,6 +84,7 @@ Before you offer anything further, tell the user plainly that rule-file writing 
 - **Comments used.** How many of those comments survived Step 2's semantic filter and shaped a rule. This number is smaller than "comments fetched" — most fetched comments turn out to be noise, discussion, or a duplicate of a rule you already captured.
 - **Rules created.** The total rule count across every file you wrote this run, PR-derived and locally-inferred combined.
 - **Tokens used.** State this as an estimate, and say so. You have no reliable way to read your own exact token usage mid-session. Base the estimate on a rough proxy: divide the character count you read from the comment dump and local files, plus the character count you wrote to rule files, by about 4. Tell the user this is a rough estimate, not a billed figure, and point them to `/cost` for an exact number.
+- **Languages skipped.** Any language Step 3 chose not to write a file for — no actionable rule from either step, or too few files in the repo to be worth a dedicated file — with a one-line reason each.
 
 Example:
 
@@ -93,6 +95,7 @@ Example:
 > - 342 merged PRs fetched, 118 comments survived filtering, 23 of those used to create rules
 > - 19 rules created total
 > - ~28K tokens used this run (rough estimate — run `/cost` for an exact figure)
+> - Skipped json — only config and lock files, formatting fully enforced by Prettier, nothing to hand-document
 
 If Step 3 left any open questions unresolved, list them here too, separate from the summary.
 
