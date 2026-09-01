@@ -4,7 +4,7 @@ This Claude Code skill turns a GitHub repo's PR review-comment history into
 per-language coding-style rule files. It adds rules inferred from the local
 codebase.
 
-See [SKILL.md](SKILL.md) for the full procedure.
+See [SKILL.md](skills/comments-to-rules/SKILL.md) for the full procedure.
 
 ## Requirements
 
@@ -18,19 +18,23 @@ See [SKILL.md](SKILL.md) for the full procedure.
 
 ## Install
 
-Clone this repo into your Claude Code skills directory:
+This is a Claude Code plugin. Add its marketplace, then install it:
 
-```bash
-git clone https://github.com/BatchCodes/comments-to-rules ~/.claude/skills/comments-to-rules
+```text
+/plugin marketplace add BatchCodes/batch-marketplaces
+/plugin install comments-to-rules@batch-marketplaces
 ```
 
-Or, if you already have a local clone elsewhere:
-
+Or, from a local clone, for development or testing:
 ```bash
-ln -s /path/to/comments-to-rules ~/.claude/skills/comments-to-rules
+claude --plugin-dir /path/to/comments-to-rules
 ```
 
-Restart Claude Code, or start a new session, so it picks up the skill.
+Or, install just the skill directly, without the plugin machinery:
+```bash
+git clone https://github.com/BatchCodes/comments-to-rules /tmp/comments-to-rules
+cp -r /tmp/comments-to-rules/skills/comments-to-rules ~/.claude/skills/comments-to-rules
+```
 
 ## Run
 
@@ -42,7 +46,7 @@ different repo from this skill's own repo. Then either:
   rules from our PR review history". Claude Code matches this against the
   skill's trigger description and runs the same procedure.
 
-Either way runs the procedure in [SKILL.md](SKILL.md):
+Either way runs the procedure in [SKILL.md](skills/comments-to-rules/SKILL.md):
 
 1. Fetches merged-PR review comments through `gh`.
 2. Filters and groups them into per-language rules.
@@ -62,15 +66,18 @@ Either way runs the procedure in [SKILL.md](SKILL.md):
 - GitHub only, for now. See [Future Work](#future-work) for notes on
   supporting GitLab, Bitbucket, and self-hosted Git forges.
 - Linux only, tested. macOS ships `bash` 3.2 and no `timeout` command by
-  default. `scripts/lib/fetch_pr_comments.sh` needs `timeout` to kill a
-  stuck fetch. See the macOS note in [Future Work](#future-work).
+  default. `skills/comments-to-rules/scripts/lib/fetch_pr_comments.sh` needs
+  `timeout` to kill a stuck fetch. See the macOS note in
+  [Future Work](#future-work).
 - Fetches merged PRs by default, most recent 1000. Pass `--all` to
-  `scripts/fetch_comments.sh` for no cap, or ask Claude to use it. See
-  [references/fetch-plan.md](references/fetch-plan.md) for every flag.
+  `skills/comments-to-rules/scripts/fetch_comments.sh` for no cap, or ask
+  Claude to use it. See
+  [references/fetch-plan.md](skills/comments-to-rules/references/fetch-plan.md)
+  for every flag.
 
 ## Future Work
 
-- **Non-GitHub remote hosts.** The fetch pipeline (`scripts/lib/`) is
+- **Non-GitHub remote hosts.** The fetch pipeline (`skills/comments-to-rules/scripts/lib/`) is
   GitHub-specific today: the `gh` CLI, GitHub's REST API shape, GitHub's
   `403`/`429` rate-limit semantics. Supporting GitLab, Bitbucket, or a
   self-hosted Gitea or Forgejo instance means detecting the remote host,
@@ -93,7 +100,8 @@ Either way runs the procedure in [SKILL.md](SKILL.md):
   3.2 and defaults to `zsh` — the scripts should still run under bash 3.2,
   since nothing here needs bash 4+ features, but that needs verifying, not
   assuming. macOS also has no `timeout` command by default (no GNU
-  coreutils), and `scripts/lib/fetch_pr_comments.sh` depends on it to kill a
+  coreutils), and `skills/comments-to-rules/scripts/lib/fetch_pr_comments.sh`
+  depends on it to kill a
   stuck `gh api` call. A fix would detect `timeout` versus Homebrew's
   `gtimeout` (`brew install coreutils`), or replace it with a portable
   background-job-plus-`kill` wrapper that depends on neither.
@@ -111,10 +119,10 @@ and [.claude/rules/code-style-markdown.md](.claude/rules/code-style-markdown.md)
 
 ## See also
 
-- [SKILL.md](SKILL.md) — the procedure Claude Code follows.
-- [references/fetch-plan.md](references/fetch-plan.md) — full spec for the
+- [SKILL.md](skills/comments-to-rules/SKILL.md) — the procedure Claude Code follows.
+- [references/fetch-plan.md](skills/comments-to-rules/references/fetch-plan.md) — full spec for the
   fetch pipeline.
-- [references/rule-template.md](references/rule-template.md) — output
+- [references/rule-template.md](skills/comments-to-rules/references/rule-template.md) — output
   format for the generated rule files.
 
 ## Example Outputs

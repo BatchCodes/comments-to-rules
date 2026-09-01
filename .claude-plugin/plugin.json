@@ -1,0 +1,17 @@
+{
+  "name": "comments-to-rules",
+  "description": "Extract persistent coding rules from historical pull-request review comments",
+  "version": "0.1.0",
+  "author": {
+    "name": "BatchCodes"
+  },
+  "repository": "https://github.com/BatchCodes/batch-marketplaces",
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "pull-requests",
+    "rules",
+    "coding-standards",
+    "claude-code"
+  ]
+}
